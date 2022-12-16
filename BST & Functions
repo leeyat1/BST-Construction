@@ -1,0 +1,103 @@
+class BST:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+    def insert(self, value):
+        current = self
+        while current is not None:
+            if value >= current.value:
+                if current.right:
+                    current = current.right
+                else:
+                    current.right = BST(value)
+                    break
+            elif value < current.value:
+                if current.left:
+                    current = current.left
+                else:
+                    current.left = BST(value)
+                    break
+        # Write your code here.
+        # Do not edit the return statement of this method.
+        return self
+
+    def contains(self, value):
+        # Write your code here.
+        currentNode = self
+        while currentNode is not None:
+            if value == currentNode.value:
+                return True
+            elif value > currentNode.value:
+                currentNode = currentNode.right
+            else:
+                currentNdoe = currentNode.left    
+        return False
+
+    def remove(self, value, parentNode=None):    
+        # Write your code here.
+        # Do not edit the return statement of this method.
+        parentNode, node = self.getFirst(value, parentNode)
+
+        if node is None:
+            return
+
+        if self.IsOnlyNode(parentNode,  node):
+            return
+
+        if node.left and node.right:
+            repNode = node.right.GetMinNode(parentNode)
+            node.value = repNode.value
+            node.right.remove(repNode, node)
+
+        elif node.left is None and node.right is None: # if current is leaf node
+            if parentNode.left == node:
+                parentNode.left = None
+            elif parentNode.right == node:
+                parentNode.right = None
+
+        elif node.left:
+            repNode = node.left.GetMaxNode(parentNode)
+            node.value = repNode.value
+            node.left.remove(repNode.value, node)
+
+        elif node.right:
+            repNode = node.right.GetMinNode(parentNode)
+            node.value = repNode.value
+            node.right.remove(repNode, node)
+      
+        
+        return self
+
+        def IsOnlyNode(self, parentNode, node):
+            return parentNode is None and node.left is None and node.right is None
+
+        def GetFirstNode(self,value, parentNode = None):
+            node = self
+            while node is not None:
+                if value == node.value:
+                    return node, parentNode
+                elif value > node.value:
+                    parentNode = node
+                    node = node.right
+                else:
+                    parentNode = node
+                    node = node.left
+            return None, None
+            
+
+        def GetMaxNode(self, parentNode):
+            node = self
+            while node.right:
+                parentNode = node
+                node = node.right
+            return node
+            
+
+        def GetMinNode(self, parentNode):
+            node = self
+            while node.left:
+                parent = node
+                node = node.left
+            return node
